@@ -1,0 +1,1 @@
+include (../FlippIt.pro)
