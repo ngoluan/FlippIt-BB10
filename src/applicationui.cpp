@@ -30,6 +30,7 @@
 #include <bb/network/PushService>
 #include <bb/network/PushStatus>
 #include <bb/network/PushErrorCode>
+#include <bb/system/Clipboard>
 #include <QDebug>
 #include <QUrl>
 #include <QSettings>
@@ -80,13 +81,17 @@ ApplicationUI::ApplicationUI() :
     Q_UNUSED(res);
 
     settings = new Settings();
+    send = new Send();
     generalUtilities = new GeneralUtilities();
+    history = new History();
 
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
+    qml->setContextProperty("_app", this);
+    qml->setContextProperty("_history", history);
+    qml->setContextProperty("_send", send);
     navPane = qml->createRootObject<NavigationPane>();
 
-    qml->setContextProperty("_app", this);
-
+    send->setNavPane(navPane);
 
     Application::instance()->setScene(navPane);
 
@@ -241,10 +246,8 @@ void ApplicationUI::login(){
 }
 void ApplicationUI::handleUserLoggedIn(){
     QmlDocument *qml = QmlDocument::create("asset:///welcome.qml").parent(this);
-    qml->setContextProperty("_app", this);
-    qml->setContextProperty("_nav", navPane);
     Page *welcomePage = qml->createRootObject<Page>();
-
+    qml->setContextProperty("_app", this);
     navPane->pop();
     navPane->push(welcomePage);
     navPane->setBackButtonsVisible(false);
@@ -253,13 +256,24 @@ void ApplicationUI::handleUserLoggedIn(){
 void ApplicationUI::openHistoryPage(){
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
     qml->setContextProperty("_app", this);
-    qml->setContextProperty("_nav", navPane);
     Page *historyPage = navPane->top();
-
     navPane->pop();
     navPane->navigateTo (historyPage);
     navPane->setBackButtonsVisible(true);
     qDebug() << "Pushed historyPage";
+}
+void ApplicationUI::getHistory(){
+    history->addData();
+}
+void ApplicationUI::getDevices(){
+    send->addDevices();
+}
+void ApplicationUI::copyItem(){
+    //String message = history
+    Clipboard clipboard;
+    clipboard.clear();
+    clipboard.insert("text/plain", "test");
+    generalUtilities->createToast("Copied to clipboard");
 }
 void ApplicationUI::onSystemLanguageChanged()
 {

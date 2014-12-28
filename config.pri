@@ -36,12 +36,19 @@ simulator {
 
 config_pri_assets {
     OTHER_FILES += \
+        $$quote($$BASEDIR/assets/HistoryItem.qml) \
+        $$quote($$BASEDIR/assets/Send.qml) \
         $$quote($$BASEDIR/assets/images/Thumbs.db) \
         $$quote($$BASEDIR/assets/images/action_icon.png) \
+        $$quote($$BASEDIR/assets/images/computer_black.png) \
         $$quote($$BASEDIR/assets/images/computer_white.png) \
         $$quote($$BASEDIR/assets/images/doublearrows_white.png) \
+        $$quote($$BASEDIR/assets/images/phone_black.png) \
         $$quote($$BASEDIR/assets/images/phone_white.png) \
+        $$quote($$BASEDIR/assets/images/rounded_blue.amd) \
+        $$quote($$BASEDIR/assets/images/rounded_blue.png) \
         $$quote($$BASEDIR/assets/images/send_white.png) \
+        $$quote($$BASEDIR/assets/images/sendbutton.png) \
         $$quote($$BASEDIR/assets/login.qml) \
         $$quote($$BASEDIR/assets/main.qml) \
         $$quote($$BASEDIR/assets/welcome.qml)
@@ -49,6 +56,8 @@ config_pri_assets {
 
 config_pri_source_group1 {
     SOURCES += \
+        $$quote($$BASEDIR/src/History.cpp) \
+        $$quote($$BASEDIR/src/Send.cpp) \
         $$quote($$BASEDIR/src/applicationui.cpp) \
         $$quote($$BASEDIR/src/generalUtilities.cpp) \
         $$quote($$BASEDIR/src/login.cpp) \
@@ -57,6 +66,8 @@ config_pri_source_group1 {
         $$quote($$BASEDIR/src/settings.cpp)
 
     HEADERS += \
+        $$quote($$BASEDIR/src/History.hpp) \
+        $$quote($$BASEDIR/src/Send.hpp) \
         $$quote($$BASEDIR/src/applicationui.hpp) \
         $$quote($$BASEDIR/src/generalUtilities.hpp) \
         $$quote($$BASEDIR/src/login.hpp) \

@@ -5,6 +5,7 @@ LIBS += -lbbnetwork
 LIBS += -lbbplatform
 LIBS += -lbbdata
 LIBS += -lbbsystem
+LIBS += -lbbcascadespickers
 QT += network
 
 include(config.pri)

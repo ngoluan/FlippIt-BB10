@@ -22,7 +22,7 @@ static const uint qt_meta_data_ApplicationUI[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-      10,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -44,6 +44,9 @@ static const uint qt_meta_data_ApplicationUI[] = {
      343,  339,   14,   14, 0x02,
      364,   14,   14,   14, 0x02,
      372,   14,   14,   14, 0x02,
+     390,   14,   14,   14, 0x02,
+     403,   14,   14,   14, 0x02,
+     414,   14,   14,   14, 0x02,
 
        0        // eod
 };
@@ -58,7 +61,8 @@ static const char qt_meta_stringdata_ApplicationUI[] = {
     "request\0onInvoked(bb::system::InvokeRequest)\0"
     "handleUserLoggedIn()\0onSystemLanguageChanged()\0"
     "msg\0createToast(QString)\0login()\0"
-    "openHistoryPage()\0"
+    "openHistoryPage()\0getHistory()\0"
+    "copyItem()\0getDevices()\0"
 };
 
 void ApplicationUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -77,6 +81,9 @@ void ApplicationUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 7: _t->createToast((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 8: _t->login(); break;
         case 9: _t->openHistoryPage(); break;
+        case 10: _t->getHistory(); break;
+        case 11: _t->copyItem(); break;
+        case 12: _t->getDevices(); break;
         default: ;
         }
     }
@@ -114,9 +121,9 @@ int ApplicationUI::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 10)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 10;
+        _id -= 13;
     }
     return _id;
 }

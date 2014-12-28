@@ -18,6 +18,8 @@
 #define ApplicationUI_HPP_
 
 #include "settings.hpp"
+#include "History.hpp"
+#include "Send.hpp"
 #include "generalUtilities.hpp"
 #include <QObject>
 #include <bb/network/PushService>
@@ -49,7 +51,12 @@ public:
     Q_INVOKABLE void createToast(QString msg);
     Q_INVOKABLE void login();
     Q_INVOKABLE void openHistoryPage();
+    Q_INVOKABLE void getHistory();
+    Q_INVOKABLE void copyItem();
+    Q_INVOKABLE void getDevices();
+    History *history;
     bb::cascades::NavigationPane *navPane;
+    Send *send;
     Settings *settings;
     GeneralUtilities *generalUtilities;
 Q_SIGNALS:
@@ -69,6 +76,8 @@ private:
     void startPushSession();
     void pushNotificationHandler(bb::network::PushPayload &pushPayload);
     bb::system::InvokeManager *m_invokeManager;
+
+
 };
 
 #endif /* ApplicationUI_HPP_ */

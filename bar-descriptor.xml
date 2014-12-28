@@ -97,6 +97,7 @@
         <permission system="true">_sys_use_consumer_push</permission>
     <permission>post_notification</permission>
     <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>
+    <env var="CASCADES_THEME" value="bright"/>
 	
 	<invoke-target id="com.luan.FlippIt.invoke.push">
       <type>APPLICATION</type>

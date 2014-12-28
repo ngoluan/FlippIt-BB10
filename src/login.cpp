@@ -24,7 +24,7 @@ Login::~Login()
     // TODO Auto-generated destructor stub
 }
 void Login::loginUser(QString email, QString password){
-    qDebug() << "Logging in: " + email;
+    qDebug() << "Logging in: " + email + " " + password;
     localEmail = email;
     generalUtilities = new GeneralUtilities();
     settings = new Settings();
@@ -44,7 +44,7 @@ void Login::loginUser(QString email, QString password){
 
     QNetworkRequest networkRequest= QNetworkRequest();
     networkRequest.setUrl(requestUrl);
-
+    networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
     reply = networkManager->post(networkRequest,data);
     bool ok = connect(reply, SIGNAL(finished()), this, SLOT(finishedSlot()));
     Q_ASSERT(ok);
@@ -67,7 +67,7 @@ void Login::finishedSlot()
             generalUtilities->createToast(error);
         }
         else{
-            settings->getValueFor("email",localEmail);
+            settings->saveValueFor("email",localEmail);
             generalUtilities->createToast(message);
             emit userLoggedIn();
         }
