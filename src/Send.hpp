@@ -28,16 +28,18 @@ public:
     Q_INVOKABLE void addDevices();
     Q_INVOKABLE void getDevices();
     Q_INVOKABLE void test();
-    Q_INVOKABLE void sendText();
-    Q_INVOKABLE void filePicker();
+    Q_INVOKABLE void sendText(QVariantMap device);
+    Q_INVOKABLE void sendFile(QVariantMap device);
+    Q_INVOKABLE void filePicker(QString fileName);
     Q_INVOKABLE void setSaveMessage();
     void setNavPane(NavigationPane *navPane);
     virtual ~Send();
     bb::cascades::GroupDataModel* model() const;
 public Q_SLOTS:
     void finishedSlot();
+    void sendFinish();
     void handleTouch(bb::cascades::TouchEvent* event);
-    void onFileSelected(const QStringList& files);
+    void SlotSetProgressLevel(qint64 bytesSent, qint64 bytesTotal);
 private:
     QString fileName;
     bb::cascades::GroupDataModel *m_model;
@@ -47,6 +49,7 @@ private:
     NavigationPane *nav;
     QNetworkReply* reply;
     QString saveMessage;
+    QNetworkAccessManager nam;
 };
 
 #endif /* SEND_HPP_ */

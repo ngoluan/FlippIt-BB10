@@ -1,10 +1,13 @@
 1
-16
+20
 HistoryItem.qml
 images/action_icon.png
+images/clear_blue.png
 images/computer_black.png
 images/computer_white.png
 images/doublearrows_white.png
+images/history_blue.png
+images/onetime_blue.png
 images/phone_black.png
 images/phone_white.png
 images/rounded_blue.amd
@@ -12,6 +15,7 @@ images/rounded_blue.png
 images/sendbutton.png
 images/send_white.png
 images/Thumbs.db
+images/upload_blue.png
 login.qml
 main.qml
 Send.qml

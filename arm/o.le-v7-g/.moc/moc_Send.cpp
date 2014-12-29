@@ -22,8 +22,8 @@ static const uint qt_meta_data_Send[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
-       1,   59, // properties
+      11,   14, // methods
+       1,   69, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
@@ -31,29 +31,34 @@ static const uint qt_meta_data_Send[] = {
 
  // slots: signature, parameters, type, tag, flags
        6,    5,    5,    5, 0x0a,
-      27,   21,    5,    5, 0x0a,
-      72,   66,    5,    5, 0x0a,
+      21,    5,    5,    5, 0x0a,
+      40,   34,    5,    5, 0x0a,
+     100,   79,    5,    5, 0x0a,
 
  // methods: signature, parameters, type, tag, flags
-     100,    5,    5,    5, 0x02,
-     113,    5,    5,    5, 0x02,
-     126,    5,    5,    5, 0x02,
-     133,    5,    5,    5, 0x02,
-     144,    5,    5,    5, 0x02,
-     157,    5,    5,    5, 0x02,
+     136,    5,    5,    5, 0x02,
+     149,    5,    5,    5, 0x02,
+     162,    5,    5,    5, 0x02,
+     176,  169,    5,    5, 0x02,
+     198,  169,    5,    5, 0x02,
+     229,  220,    5,    5, 0x02,
+     249,    5,    5,    5, 0x02,
 
  // properties: name, type, flags
-     204,  174, 0x00095409,
+     296,  266, 0x00095409,
 
        0        // eod
 };
 
 static const char qt_meta_stringdata_Send[] = {
-    "Send\0\0finishedSlot()\0event\0"
-    "handleTouch(bb::cascades::TouchEvent*)\0"
-    "files\0onFileSelected(QStringList)\0"
+    "Send\0\0finishedSlot()\0sendFinish()\0"
+    "event\0handleTouch(bb::cascades::TouchEvent*)\0"
+    "bytesSent,bytesTotal\0"
+    "SlotSetProgressLevel(qint64,qint64)\0"
     "addDevices()\0getDevices()\0test()\0"
-    "sendText()\0filePicker()\0setSaveMessage()\0"
+    "device\0sendText(QVariantMap)\0"
+    "sendFile(QVariantMap)\0fileName\0"
+    "filePicker(QString)\0setSaveMessage()\0"
     "bb::cascades::GroupDataModel*\0model\0"
 };
 
@@ -64,14 +69,16 @@ void Send::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void *
         Send *_t = static_cast<Send *>(_o);
         switch (_id) {
         case 0: _t->finishedSlot(); break;
-        case 1: _t->handleTouch((*reinterpret_cast< bb::cascades::TouchEvent*(*)>(_a[1]))); break;
-        case 2: _t->onFileSelected((*reinterpret_cast< const QStringList(*)>(_a[1]))); break;
-        case 3: _t->addDevices(); break;
-        case 4: _t->getDevices(); break;
-        case 5: _t->test(); break;
-        case 6: _t->sendText(); break;
-        case 7: _t->filePicker(); break;
-        case 8: _t->setSaveMessage(); break;
+        case 1: _t->sendFinish(); break;
+        case 2: _t->handleTouch((*reinterpret_cast< bb::cascades::TouchEvent*(*)>(_a[1]))); break;
+        case 3: _t->SlotSetProgressLevel((*reinterpret_cast< qint64(*)>(_a[1])),(*reinterpret_cast< qint64(*)>(_a[2]))); break;
+        case 4: _t->addDevices(); break;
+        case 5: _t->getDevices(); break;
+        case 6: _t->test(); break;
+        case 7: _t->sendText((*reinterpret_cast< QVariantMap(*)>(_a[1]))); break;
+        case 8: _t->sendFile((*reinterpret_cast< QVariantMap(*)>(_a[1]))); break;
+        case 9: _t->filePicker((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 10: _t->setSaveMessage(); break;
         default: ;
         }
     }
@@ -109,9 +116,9 @@ int Send::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 11;
     }
 #ifndef QT_NO_PROPERTIES
       else if (_c == QMetaObject::ReadProperty) {

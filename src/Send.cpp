@@ -8,7 +8,9 @@
 #include <src/Send.hpp>
 #include <bb/cascades/NavigationPane>
 #include <bb/cascades/Page>
+#include <bb/cascades/Button>
 #include <bb/cascades/ImageView>
+#include <bb/cascades/TextArea>
 #include <bb/cascades/Container>
 #include <bb/cascades/StackLayout>
 #include <bb/cascades/Label>
@@ -19,6 +21,8 @@
 #include <bb/cascades/VisualNode>
 #include <bb/cascades/pickers/FilePicker>
 #include <QVariantMap>
+#include <QUrl>
+#include <QByteArray>
 
 using namespace bb::cascades;
 
@@ -29,6 +33,7 @@ Send::Send(QObject *parent)
     generalUtilities = new GeneralUtilities();
     settings = new Settings();
     m_model->setGrouping(ItemGrouping::None);
+    saveMessage="true";
 }
 void Send::addDevices(){
     QString devicesStr = settings->getValueFor("devices","");
@@ -111,13 +116,13 @@ void Send::drawDevices(QVariantList devices){
         else if(map["type"].toString() == "chrome"){
             imageView->setImage(Image("asset:///images/computer_black.png"));
         }
-        imageView->setObjectName(map["targetID"].toString()+"_img");
+        imageView->setObjectName(map["targetID"].toString()+"__FlippImg");
         imageView->setScalingMethod(ScalingMethod::AspectFill);
         imageView->setPreferredSize(144, 144);
         imageView->setHorizontalAlignment(HorizontalAlignment::Center);
 
         Container *outerContainer = new Container();
-        outerContainer->setObjectName(map["targetID"].toString()+"_cont");
+        outerContainer->setObjectName(map["targetID"].toString()+"_FlippCont");
         outerContainer->setBackground(ImagePaint("asset:///images/rounded_blue.amd", RepeatPattern::XY));
         outerContainer->setPreferredSize(196,196);
         outerContainer->setLeftMargin(20);
@@ -169,18 +174,146 @@ void Send::setNavPane(NavigationPane * navPane){
 void Send::handleTouch(bb::cascades::TouchEvent* event)
 {
     if(event->touchType() == TouchType::Up){
-        generalUtilities->createToast("touch up");
-        qDebug()<<"eventoutput"+event->toDebugString();
         VisualNode* targetDevice = event->target();
-        qDebug()<< "target output" +targetDevice->toDebugString();
-        qDebug()<< "target outputname" +targetDevice->objectName();
-        if(fileName==""){
-            sendText();
+
+        QString name = targetDevice->objectName();
+        QString targetID = name.left(name.indexOf("__Flipp"));
+
+        QList<QVariantMap> list = m_model->toListOfMaps();
+        foreach(QVariantMap item, list){
+
+            if (item["targetID"].toString() == targetID){
+                qDebug()<<item["type"];
+                qDebug()<<fileName;
+                if(fileName==""){
+                    sendText(item);
+                }
+                else{
+                    sendFile(item);
+                }
+            }
         }
     }
 }
-void Send::sendText(){
 
+void Send::sendFile(QVariantMap device){
+    QString targetType = device["type"].toString();
+    QString targetID = device["targetID"].toString();
+
+    QUrl url(generalUtilities->serverPath+"server/upload_v2.php");
+    TextArea *messageText = nav->findChild<TextArea*>("messageText");
+
+    QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+
+    QByteArray emailData;
+    emailData.append(settings->getValueFor("email",""));
+    QHttpPart emailPart;
+    emailPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"email\""));
+    emailPart.setBody(emailData);
+
+    QByteArray targetTypeData;
+    targetTypeData.append(targetType);
+    QHttpPart targetTypePart;
+    targetTypePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"targetType\""));
+    targetTypePart.setBody(targetTypeData);
+
+    QByteArray targetIDData;
+    targetIDData.append(targetID);
+    QHttpPart targetIDPart;
+    emailPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"targetID\""));
+    emailPart.setBody(targetIDData);
+
+    QByteArray saveMessageData;
+    saveMessageData.append(saveMessage);
+    QHttpPart saveMessagePart;
+    saveMessagePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"saveMessage\""));
+    saveMessagePart.setBody(saveMessageData);
+
+    QByteArray messageTextData;
+    messageTextData.append(messageText->text());
+    QHttpPart messagePart;
+    messagePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"message\""));
+    messagePart.setBody(messageTextData);
+
+    QHttpPart filePart;
+    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\""));
+    QFile *file = new QFile(fileName);
+    file->open(QIODevice::ReadOnly);
+    qDebug()<<file->size();
+    qDebug()<<file->fileName();
+    filePart.setBodyDevice(file);
+    file->setParent(multiPart); // we cannot delete the file now, so delete it with the multiPart
+
+    multiPart->append(emailPart);
+    multiPart->append(targetIDPart);
+    multiPart->append(targetTypePart);
+    multiPart->append(saveMessagePart);
+    multiPart->append(messagePart);
+
+    multiPart->append(filePart);
+
+    QNetworkRequest request(url);
+
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+    reply = networkManager->post(request, multiPart);
+
+    bool ok = connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(SlotSetProgressLevel(qint64, qint64)));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
+
+    ok = connect(reply, SIGNAL(finished()), this, SLOT(sendFinish()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
+}
+void Send::SlotSetProgressLevel(qint64 bytesSent, qint64 bytesTotal) {
+    qDebug() << "Uploaded" << bytesSent << "of" << bytesTotal;
+}
+void Send::sendText(QVariantMap device){
+    QString targetType = device["type"].toString();
+    QString targetID = device["targetID"].toString();
+    TextArea *messageText = nav->findChild<TextArea*>("messageText");
+
+    QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
+    QString email = settings->getValueFor("email","");
+    QByteArray data;
+    QUrl params;
+    params.addQueryItem("email", email);
+    params.addQueryItem("targetType", targetType);
+    params.addQueryItem("targetID",targetID);
+    params.addQueryItem("saveMessage",saveMessage);
+    params.addQueryItem("message",messageText->text());
+    data.append(params.toString());
+    data.remove(0,1);
+
+    QString requestUrl = generalUtilities->serverPath + "server/send_v2.php";
+
+    QNetworkRequest networkRequest= QNetworkRequest();
+    networkRequest.setUrl(requestUrl);
+    networkRequest.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
+    reply = networkManager->post(networkRequest,data);
+    bool ok = connect(reply, SIGNAL(finished()), this, SLOT(sendFinish()));
+    Q_ASSERT(ok);
+    Q_UNUSED(ok);
+}
+void Send::sendFinish()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        // read data from QNetworkReply here
+
+        // Example 2: Reading bytes form the reply
+        QByteArray bytes = reply->readAll();  // bytes
+        QString string(bytes); // string
+        qDebug() << "Server response: " + string;
+    }
+    // Some http error received
+    else
+    {
+        // handle errors here
+    }
 }
 void Send::test(){
             ImageView * imageView = new ImageView();
@@ -218,28 +351,22 @@ void Send::test(){
             Container *deviceContainer = nav->findChild<Container*>("deviceContainer");
             deviceContainer->add(imageView);
 }
-void Send::filePicker(){
-    FilePicker* filePicker = new FilePicker();
-    filePicker->setType(FileType::Picture);
-    filePicker->setTitle("Select file");
-    //filePicker->setMode(FilePickerMode::Picker);
-    filePicker->open();
-
-    // Connect the fileSelected() signal with the slot.
-    QObject::connect(filePicker,
-        SIGNAL(fileSelected(const QStringList&)),
-        this,
-        SLOT(onFileSelected(const QStringList&)));
-
+void Send::filePicker(QString chosenFile){
+    fileName = chosenFile;
+    generalUtilities->createToast(fileName);
 }
-void Send::onFileSelected(const QStringList& files){
-    fileName = files.at(0);
-    qDebug()<<"Filename " + fileName;
-}
+
 void Send::setSaveMessage(){
+    Button *saveButton = nav->findChild<Button*>("saveButton");
     if(saveMessage=="false"){
-        saveMessage=true;
-
+        saveMessage="true";
+        QUrl image("asset:///images/history_blue.png");
+        saveButton->setImageSource(image);
+    }
+    else{
+        saveMessage="true";
+        QUrl image("asset:///images/onetime_blue.png");
+        saveButton->setImageSource(image);
     }
 }
 Send::~Send()

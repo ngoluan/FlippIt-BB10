@@ -116,6 +116,7 @@ NavigationPane {
     attachedObjects: [
         ComponentDefinition {
             id: sendPage
+            
             source: "Send.qml"
         },
         Invocation {
@@ -131,7 +132,13 @@ NavigationPane {
            }             
         }
     ]
-
+    onPushTransitionEnded: {
+        if(navPane.top.objectName=="sendPage")
+        {
+            _app.getDevices()
+        }
+        //if(navPane.top.objectName)
+    }
 }
 
 

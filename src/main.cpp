@@ -15,7 +15,7 @@
  */
 
 #include "applicationui.hpp"
-
+#include <bb/cascades/pickers/FilePicker>
 #include <bb/cascades/Application>
 
 #include <QLocale>
@@ -33,6 +33,8 @@ void myMessageOutput(QtMsgType type, const char* msg){
 
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
+    qmlRegisterType<pickers::FilePicker>("bb.cascades.pickers", 1, 0, "FilePicker");
+
     Application app(argc, argv);
     qInstallMsgHandler(myMessageOutput);
     // Create the Application UI object, this is where the main.qml file

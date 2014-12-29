@@ -40,15 +40,19 @@ config_pri_assets {
         $$quote($$BASEDIR/assets/Send.qml) \
         $$quote($$BASEDIR/assets/images/Thumbs.db) \
         $$quote($$BASEDIR/assets/images/action_icon.png) \
+        $$quote($$BASEDIR/assets/images/clear_blue.png) \
         $$quote($$BASEDIR/assets/images/computer_black.png) \
         $$quote($$BASEDIR/assets/images/computer_white.png) \
         $$quote($$BASEDIR/assets/images/doublearrows_white.png) \
+        $$quote($$BASEDIR/assets/images/history_blue.png) \
+        $$quote($$BASEDIR/assets/images/onetime_blue.png) \
         $$quote($$BASEDIR/assets/images/phone_black.png) \
         $$quote($$BASEDIR/assets/images/phone_white.png) \
         $$quote($$BASEDIR/assets/images/rounded_blue.amd) \
         $$quote($$BASEDIR/assets/images/rounded_blue.png) \
         $$quote($$BASEDIR/assets/images/send_white.png) \
         $$quote($$BASEDIR/assets/images/sendbutton.png) \
+        $$quote($$BASEDIR/assets/images/upload_blue.png) \
         $$quote($$BASEDIR/assets/login.qml) \
         $$quote($$BASEDIR/assets/main.qml) \
         $$quote($$BASEDIR/assets/welcome.qml)
@@ -74,6 +78,8 @@ config_pri_source_group1 {
         $$quote($$BASEDIR/src/pushService.hpp) \
         $$quote($$BASEDIR/src/settings.hpp)
 }
+
+INCLUDEPATH += $$quote($$BASEDIR/src)
 
 CONFIG += precompile_header
 
