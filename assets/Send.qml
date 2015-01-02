@@ -64,6 +64,14 @@ Page {
             horizontalAlignment: HorizontalAlignment.Center
 
         }
-
+        Label {
+            id:fileText
+            objectName: "fileText"
+        }
+        ImageView {
+            id:fileImage
+            objectName: "fileImage"
+        }
+        
     }
 }

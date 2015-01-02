@@ -22,6 +22,7 @@
 #include <bb/cascades/pickers/FilePicker>
 #include <QVariantMap>
 #include <QUrl>
+#include <QHttpPart>
 #include <QByteArray>
 
 using namespace bb::cascades;
@@ -277,6 +278,7 @@ void Send::sendText(QVariantMap device){
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
     QString email = settings->getValueFor("email","");
     QByteArray data;
+
     QUrl params;
     params.addQueryItem("email", email);
     params.addQueryItem("targetType", targetType);
