@@ -57,8 +57,11 @@ Page {
                 title: "Select File"
                 onFileSelected: {
                     selectedFile = selectedFiles[0]
-                    _send.filePicker("file://" + selectedFile)
-
+                    fileText.text="file://"+selectedFile
+                    //fileImage.imageSource="file://"+selectedFile
+                    //fileImage.imageSource="asset:///images/clear_blue.png"
+                    _send.filePicker(selectedFile)
+                    
                 }
             }
             horizontalAlignment: HorizontalAlignment.Center
@@ -70,6 +73,7 @@ Page {
         }
         ImageView {
             id:fileImage
+            //imageSource: "file://accounts/1000/shared/downloads/images.jpg"
             objectName: "fileImage"
         }
         

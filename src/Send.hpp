@@ -13,6 +13,7 @@
 #include <bb/cascades/NavigationPane>
 #include <QDebug>
 #include <QString>
+#include <QStringList>
 #include <bb/cascades/TouchEvent>
 #include "generalUtilities.hpp"
 #include "settings.hpp"
@@ -50,6 +51,8 @@ private:
     QNetworkReply* reply;
     QString saveMessage;
     QNetworkAccessManager nam;
+
+
 };
 
 #endif /* SEND_HPP_ */

@@ -22,7 +22,10 @@
 #include <bb/cascades/pickers/FilePicker>
 #include <QVariantMap>
 #include <QUrl>
+#include <QStringList>
 #include <QHttpPart>
+#include <QMimeDatabase>
+#include <QFileInfo>
 #include <QByteArray>
 
 using namespace bb::cascades;
@@ -198,10 +201,10 @@ void Send::handleTouch(bb::cascades::TouchEvent* event)
 }
 
 void Send::sendFile(QVariantMap device){
-    QString targetType = device["type"].toString();
+QString targetType = device["type"].toString();
     QString targetID = device["targetID"].toString();
 
-    QUrl url(generalUtilities->serverPath+"server/upload_v2.php");
+    QUrl url(generalUtilities->serverPath+"server/uploadTest.php");
     TextArea *messageText = nav->findChild<TextArea*>("messageText");
 
     QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
@@ -237,12 +240,19 @@ void Send::sendFile(QVariantMap device){
     messagePart.setBody(messageTextData);
 
     QHttpPart filePart;
-    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
-    filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\""));
+    QFileInfo fileInfo(fileName);
+    QMimeDatabase db;
+    QMimeType mime = db.mimeTypeForFile(fileName);
+    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(mime.name()));
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader,QVariant("form-data; name=\"file\"; filename=\""+ fileInfo.baseName() + "\""));
     QFile *file = new QFile(fileName);
+    if ( !file->exists() )
+     {
+         qDebug() << "File Does not exist";
+     }
     file->open(QIODevice::ReadOnly);
     qDebug()<<file->size();
-    qDebug()<<file->fileName();
+    qDebug()<<"Filename " + file->fileName();
     filePart.setBodyDevice(file);
     file->setParent(multiPart); // we cannot delete the file now, so delete it with the multiPart
 
@@ -251,7 +261,6 @@ void Send::sendFile(QVariantMap device){
     multiPart->append(targetTypePart);
     multiPart->append(saveMessagePart);
     multiPart->append(messagePart);
-
     multiPart->append(filePart);
 
     QNetworkRequest request(url);
@@ -354,8 +363,26 @@ void Send::test(){
             deviceContainer->add(imageView);
 }
 void Send::filePicker(QString chosenFile){
+
+    Image image = Image(QUrl("file://"+chosenFile));
+    ImageView* imageView = nav->findChild<ImageView*>("fileImage");
+    imageView->setImage(image);
+
+
     fileName = chosenFile;
     generalUtilities->createToast(fileName);
+    QFile newFile(fileName);
+
+    if (newFile.exists()) {
+
+        newFile.open(QIODevice::ReadOnly);
+            qDebug()<<newFile.size();
+            qDebug()<<newFile.fileName();
+
+    }
+    else{
+        qDebug()<<"no file" << fileName + " " + QDir::currentPath();
+    }
 }
 
 void Send::setSaveMessage(){

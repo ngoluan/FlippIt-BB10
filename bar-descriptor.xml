@@ -69,6 +69,7 @@
     <!-- <copyright></copyright> -->
 
     <!--  Name of author which is used for signing. Must match the developer name of your development certificate. -->
+    <category>core.games</category>
     <author>Example Inc.</author>
 
     <!--  Unique author ID assigned by signing authority. Required if using debug tokens. -->
@@ -96,6 +97,7 @@
     <permission system="true">run_native</permission>
         <permission system="true">_sys_use_consumer_push</permission>
     <permission>post_notification</permission>
+    <permission>access_shared</permission>
     <env var="LD_LIBRARY_PATH" value="app/native/lib:/usr/lib/qt4/lib"/>
     <env var="CASCADES_THEME" value="bright"/>
 	
