@@ -24,7 +24,6 @@
 #include <QUrl>
 #include <QStringList>
 #include <QHttpPart>
-#include <QMimeDatabase>
 #include <QFileInfo>
 #include <QByteArray>
 
@@ -201,7 +200,7 @@ void Send::handleTouch(bb::cascades::TouchEvent* event)
 }
 
 void Send::sendFile(QVariantMap device){
-QString targetType = device["type"].toString();
+    QString targetType = device["type"].toString();
     QString targetID = device["targetID"].toString();
 
     QUrl url(generalUtilities->serverPath+"server/uploadTest.php");
@@ -211,6 +210,7 @@ QString targetType = device["type"].toString();
 
     QByteArray emailData;
     emailData.append(settings->getValueFor("email",""));
+    qDebug()<<settings->getValueFor("email","")+ "email";
     QHttpPart emailPart;
     emailPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"email\""));
     emailPart.setBody(emailData);
@@ -241,10 +241,8 @@ QString targetType = device["type"].toString();
 
     QHttpPart filePart;
     QFileInfo fileInfo(fileName);
-    QMimeDatabase db;
-    QMimeType mime = db.mimeTypeForFile(fileName);
-    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant(mime.name()));
     filePart.setHeader(QNetworkRequest::ContentDispositionHeader,QVariant("form-data; name=\"file\"; filename=\""+ fileInfo.baseName() + "\""));
+    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
     QFile *file = new QFile(fileName);
     if ( !file->exists() )
      {
@@ -267,7 +265,7 @@ QString targetType = device["type"].toString();
 
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
     reply = networkManager->post(request, multiPart);
-
+    multiPart->setParent(reply);
     bool ok = connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(SlotSetProgressLevel(qint64, qint64)));
     Q_ASSERT(ok);
     Q_UNUSED(ok);
