@@ -109,7 +109,7 @@ ApplicationUI::ApplicationUI() :
 
         QString pimSetting = settings->getValueFor("pim","");
         if(pimSetting.trimmed().isEmpty()){
-            //startPushSession();
+            startPushSession();
         }
     }
     else{
@@ -222,7 +222,7 @@ void ApplicationUI::pushNotificationHandler(bb::network::PushPayload &pushPayloa
     notification->setInvokeRequest(invokeRequest);
 
     notification->notify();
-
+    copyItem(pushPayload.data());
 }
 void ApplicationUI::createToast(QString msg){
     SystemToast *toast = new SystemToast(this);
@@ -268,11 +268,10 @@ void ApplicationUI::getHistory(){
 void ApplicationUI::getDevices(){
     send->addDevices();
 }
-void ApplicationUI::copyItem(){
-    //String message = history
+void ApplicationUI::copyItem(QString message){
     Clipboard clipboard;
     clipboard.clear();
-    clipboard.insert("text/plain", "test");
+    clipboard.insert("text/plain", message.toUtf8());
     generalUtilities->createToast("Copied to clipboard");
 }
 void ApplicationUI::onSystemLanguageChanged()

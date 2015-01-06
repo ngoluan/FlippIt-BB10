@@ -52,7 +52,7 @@ public:
     Q_INVOKABLE void login();
     Q_INVOKABLE void openHistoryPage();
     Q_INVOKABLE void getHistory();
-    Q_INVOKABLE void copyItem();
+    Q_INVOKABLE void copyItem(QString message);
     Q_INVOKABLE void getDevices();
     History *history;
     bb::cascades::NavigationPane *navPane;

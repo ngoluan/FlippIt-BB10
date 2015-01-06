@@ -45,8 +45,8 @@ static const uint qt_meta_data_ApplicationUI[] = {
      364,   14,   14,   14, 0x02,
      372,   14,   14,   14, 0x02,
      390,   14,   14,   14, 0x02,
-     403,   14,   14,   14, 0x02,
-     414,   14,   14,   14, 0x02,
+     411,  403,   14,   14, 0x02,
+     429,   14,   14,   14, 0x02,
 
        0        // eod
 };
@@ -61,8 +61,8 @@ static const char qt_meta_stringdata_ApplicationUI[] = {
     "request\0onInvoked(bb::system::InvokeRequest)\0"
     "handleUserLoggedIn()\0onSystemLanguageChanged()\0"
     "msg\0createToast(QString)\0login()\0"
-    "openHistoryPage()\0getHistory()\0"
-    "copyItem()\0getDevices()\0"
+    "openHistoryPage()\0getHistory()\0message\0"
+    "copyItem(QString)\0getDevices()\0"
 };
 
 void ApplicationUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -82,7 +82,7 @@ void ApplicationUI::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 8: _t->login(); break;
         case 9: _t->openHistoryPage(); break;
         case 10: _t->getHistory(); break;
-        case 11: _t->copyItem(); break;
+        case 11: _t->copyItem((*reinterpret_cast< QString(*)>(_a[1]))); break;
         case 12: _t->getDevices(); break;
         default: ;
         }

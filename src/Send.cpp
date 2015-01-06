@@ -86,9 +86,6 @@ void Send::finishedSlot()
 
     if (reply->error() == QNetworkReply::NoError)
     {
-        // read data from QNetworkReply here
-
-        // Example 2: Reading bytes form the reply
         QByteArray bytes = reply->readAll();  // bytes
         QString string(bytes); // string
         qDebug() << "Server response: " + string;
@@ -203,14 +200,13 @@ void Send::sendFile(QVariantMap device){
     QString targetType = device["type"].toString();
     QString targetID = device["targetID"].toString();
 
-    QUrl url(generalUtilities->serverPath+"server/uploadTest.php");
+    QUrl url(generalUtilities->serverPath+"server/upload_v2.php");
     TextArea *messageText = nav->findChild<TextArea*>("messageText");
 
     QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
 
     QByteArray emailData;
     emailData.append(settings->getValueFor("email",""));
-    qDebug()<<settings->getValueFor("email","")+ "email";
     QHttpPart emailPart;
     emailPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"email\""));
     emailPart.setBody(emailData);
@@ -224,8 +220,8 @@ void Send::sendFile(QVariantMap device){
     QByteArray targetIDData;
     targetIDData.append(targetID);
     QHttpPart targetIDPart;
-    emailPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"targetID\""));
-    emailPart.setBody(targetIDData);
+    targetIDPart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"targetID\""));
+    targetIDPart.setBody(targetIDData);
 
     QByteArray saveMessageData;
     saveMessageData.append(saveMessage);
@@ -241,8 +237,8 @@ void Send::sendFile(QVariantMap device){
 
     QHttpPart filePart;
     QFileInfo fileInfo(fileName);
-    filePart.setHeader(QNetworkRequest::ContentDispositionHeader,QVariant("form-data; name=\"file\"; filename=\""+ fileInfo.baseName() + "\""));
-    filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
+    filePart.setHeader(QNetworkRequest::ContentDispositionHeader,QVariant("form-data; name=\"file\"; filename=\""+ fileInfo.fileName() + "\""));
+    //filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
     QFile *file = new QFile(fileName);
     if ( !file->exists() )
      {

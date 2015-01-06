@@ -26,24 +26,86 @@
 
     <!-- A universally unique application identifier. Must be unique across all BlackBerry 10 applications.
          Using a reverse DNS-style name as the id is recommended. (Eg. com.example.ExampleApplication.) Required. -->
-    <id>com.example.FlippIt</id>
-    <configuration name="Device-Debug">
-       <platformArchitecture>armle-v7</platformArchitecture>
-       <asset path="arm/o.le-v7-g/FlippIt" entry="true" type="Qnx/Elf">FlippIt</asset>
+    <id>com.luan.FlippIt</id>
+<configuration name="Device-Debug">
+        <platformArchitecture>armle-v7</platformArchitecture>
+        <entryPointType>Qnx/Elf</entryPointType>
+        <asset entryPointId="FlippIt" path="arm/o.le-v7-g/FlippIt"
+            entry="true" type="Qnx/Elf">FlippIt</asset>
+        <asset entryPointId="FlippItHeadlessService"
+            path="../FlippItHeadlessService/arm/FlippItHeadlessService"
+            type="Qnx/Elf">FlippItHeadlessService</asset>
     </configuration>
+
     <configuration name="Device-Release">
-       <entryPointType>Qnx/Cascades</entryPointType>
-       <platformArchitecture>armle-v7</platformArchitecture>
-       <asset path="arm/o.le-v7/FlippIt.so" entry="true" type="Qnx/Elf">FlippIt.so</asset>
+        <platformArchitecture>armle-v7</platformArchitecture>
+        <entryPointType>Qnx/Cascades</entryPointType>
+
+        <asset entryPointId="FlippIt" path="arm/o.le-v7/FlippIt.so"
+            entry="true" type="Qnx/Cascades">FlippIt.so</asset>
+        <asset entryPointId="FlippItHeadlessService"
+            path="../FlippItHeadlessService/arm/FlippItHeadlessService"
+            type="Qnx/Elf">FlippItHeadlessService</asset>
     </configuration>
+
     <configuration name="Device-Profile">
-       <platformArchitecture>armle-v7</platformArchitecture>
-       <asset path="arm-p/o.le-v7-g/FlippIt" entry="true" type="Qnx/Elf">FlippIt</asset>
+        <platformArchitecture>armle-v7</platformArchitecture>
+        <entryPointType>Qnx/Elf</entryPointType>
+
+        <asset entryPointId="FlippIt" path="arm-p/o.le-v7-g/FlippIt"
+            entry="true" type="Qnx/Elf">FlippIt</asset>
+        <asset entryPointId="FlippItHeadlessService"
+            path="../FlippItHeadlessService/arm/FlippItHeadlessService"
+            type="Qnx/Elf">FlippItHeadlessService</asset>
     </configuration>
+
     <configuration name="Simulator-Debug">
-       <platformArchitecture>x86</platformArchitecture>
-       <asset path="x86/o-g/FlippIt" entry="true" type="Qnx/Elf">FlippIt</asset>
+        <platformArchitecture>x86</platformArchitecture>
+        <entryPointType>Qnx/Elf</entryPointType>
+
+        <asset entryPointId="FlippIt" path="x86/o-g/FlippIt"
+            entry="true" type="Qnx/Elf">FlippIt</asset>
+        <asset entryPointId="FlippItHeadlessService"
+            path="../FlippItHeadlessService/x86/FlippItHeadlessService"
+            type="Qnx/Elf">FlippItHeadlessService</asset>
     </configuration>
+
+    <entryPoint id="FlippIt">
+        <name>FlippIt</name>
+    </entryPoint>
+
+    <entryPoint id="FlippItHeadlessService">
+        <name>FlippItHeadless Service</name>
+        <entryPointType>Qnx/Elf</entryPointType>
+        <!-- Request permission to run a backend headless process. -->
+        <permission system="true">_sys_run_headless</permission>
+        <permission system="true">_sys_headless_nostop</permission>
+    </entryPoint>
+
+    <invoke-target id="com.luan.FlippItHeadlessService">
+        <invoke-target-type>application.headless</invoke-target-type>
+        <invoke-target-name>FlippItHeadless Service</invoke-target-name>
+        <entry-point-id>FlippItHeadlessService</entry-point-id>
+        <filter>
+            <action>bb.action.system.STARTED</action>
+            <mime-type>application/vnd.blackberry.system.event.STARTED</mime-type>
+            <property var="uris" value="data://local" />
+        </filter>
+        <filter>
+            <action>com.luan.FlippItHeadlessService.RESET</action>
+            <mime-type>*</mime-type>
+            <property var="uris" value="headless:" />
+        </filter>
+    </invoke-target>
+
+    <invoke-target id="com.luan.FlippIt">
+        <invoke-target-type>application</invoke-target-type>
+        <invoke-target-name>FlippIt</invoke-target-name>
+        <icon>
+            <image>icon.png</image>
+        </icon>
+        <entry-point-id>FlippIt</entry-point-id>
+    </invoke-target>
 
     <!-- The name that is displayed in the BlackBerry 10 application installer.
          May have multiple values for each language. See samples or xsd schema file. Optional. -->
